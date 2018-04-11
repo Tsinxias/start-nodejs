@@ -6,11 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
-    "start-event": "nodemon event.js"
+    "start-event": "nodemon event.js",
+    "express": "nodemon test_express.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.16.3",
     "nodemon": "^1.17.3"
   }
 }

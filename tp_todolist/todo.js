@@ -1,38 +1,52 @@
 let express = require('express');
-let session = require('cookie-session');
+let session = require('express-session');
 let bodyParser = require('body-parser');
-let urlencodedParser = bodyParser.urlencoded({ extended: true });
+let urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 let app = express();
 
+app.use(express.static('public'));
 app.use(session({secret: 'todosecret'}));
+app.use(urlencodedParser);
+
 
 app.get('/', function(req, res) {
-  res.setHeader('Content-Type', 'text/plain');
-  res.send('Welcome on the Home Page');
+  res.setHeader('Content-Type', 'text/html');
+  res.redirect('/todo');
 });
 
 app.get('/todo', function(req, res) {
-  res.setHeader('Content-Type', 'text/plain');
-  res.send('Todo Page');
+  res.setHeader('Content-Type', 'text/html');
+  if (req.session.task != undefined) {
+    res.render("todo.ejs", {tasks: req.session.task});
+  } else {
+    res.render("todo.ejs", {tasks: []});
+  }
+  console.log(req.session.task);
 });
 
-app.post('/todo/add/:stagenum', function(req, res) {
-  let oneTask = req.body.task;
-  let tasks = ['Manger des céréales', 'Faire les courses'];
-  tasks.push(oneTask);
-  res.setHeader('Content-Type', 'text/plain');
-  res.render('./todo.ejs', {stage: req.params.stagenum, tasks: req.params.tasks})
-  res.send(`you sent ${oneTask} to Express`);
+app.post('/todo/add', function(req, res) {
+  res.setHeader('Content-Type', 'text/html');
+  let tasks = {name: req.body.task};
+  if (req.session.task == undefined) {
+    req.session.task = [];
+  }
+  req.session.task.push({name: req.body.task, done: false}); 
+  
+  console.log(req.session.task);
+  res.redirect('/todo');
 });
 
 app.get('/todo/delete/:id', function(req, res) {
-  res.setHeader('Content-Type', 'text/plain');
-  res.send('Deleting page ' + req.params.id);
+  res.setHeader('Content-Type', 'text/html');
+  if (req.params.id != '') {
+    req.session.task.splice(req.params.id, 1);
+  }
+  res.redirect('/todo');
 });
 
 app.use(function(req, res, next) {
-  res.setHeader('Content-Type', 'text/plain');
+  res.setHeader('Content-Type', 'text/html');
   res.status(404).send('Page 404, please try another root...');
 });
 

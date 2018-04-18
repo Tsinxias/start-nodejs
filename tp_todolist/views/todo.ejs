@@ -8,16 +8,14 @@
 </head>
 <body>
   <h1>Todo List</h1>
-    <p>
-      <% for (let i = 0 ; i <  alltasks.length ; i++) { %>
-        <%= alltasks[i] %>
-      <% } %>
-  </p>
-
   <form class="" action="/todo/add" method="post">
-    <label for="task">Tasks</label>
-    <input type="task">
-    <button type="submit" name="button">Add</button>
+    <input type="text" name="task" placeholder="Tasks">
   </form>
+
+  <ul>
+    <% tasks.forEach((task, index) => { %>
+      <li><a href="/todo/delete/<%= index %>">X </a><%= task.name %></li>
+    <% }); %>
+  </ul>
 </body>
 </html>

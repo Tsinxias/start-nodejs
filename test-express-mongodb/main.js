@@ -1,3 +1,6 @@
+//https://zellwk.com/blog/crud-express-mongodb/
+//https://zellwk.com/blog/crud-express-and-mongodb-2/
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb');

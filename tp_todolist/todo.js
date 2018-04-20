@@ -2,6 +2,7 @@ let express = require('express');
 let session = require('express-session');
 let bodyParser = require('body-parser');
 let urlencodedParser = bodyParser.urlencoded({ extended: false });
+let prompt = require('prompt');
 
 let app = express();
 
@@ -35,12 +36,37 @@ app.post('/todo/add', function(req, res) {
   if (req.session.task == undefined) {
     req.session.task = [];
   }
+
+
   req.session.task.push({name: req.body.task, done: false}); 
   
   console.log(req.session.task);
   res.redirect('/todo');
 });
 
+
+app.get('/todo/update/:id', function(req, res) {
+  res.setHeader('Content-Type', 'text/html');
+
+  if (req.params.id != '') {
+    text = '';
+    if (text != '') {
+      res.redirect('/todo');  
+    }
+
+    prompt.start();
+    prompt.get(['changes'], function(err, result) {
+      if (result.changes == null || result.changes == '') {
+        let text = 'No changes made';
+      }  else {
+        let text = 'Successful update';
+      }
+      req.session.task.splice(req.params.id, 1, result.changes)
+    })
+
+    
+  }
+})
 
 //Delete tasks from the array/page
 app.get('/todo/delete/:id', function(req, res) {

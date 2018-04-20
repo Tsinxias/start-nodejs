@@ -2,14 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <script src="https://use.fontawesome.com/b04ca2f55a.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Todo List</title>
 
   <style>
-      a {text-decoration: none; color: black;}
+      a {text-decoration: none; color: black; list-style-type: none;}
   </style>
-  
+
 </head>
 <body>
   <h1>Todo List</h1>
@@ -19,8 +20,9 @@
 
   <ul>
     <% tasks.forEach((task, index) => { %>
-      <li><a href="/todo/delete/<%= index %>">X </a><%= task.name %></li>
+      <li><a href="/todo/delete/<%= index %>">X   |  </a> <a href="/todo/update/<%= index %>"><i class="fa fa-paint-brush"></i>   </a><%= task.name %></li>
     <% }); %>
   </ul>
+  <p id="updated"></p>
 </body>
 </html>

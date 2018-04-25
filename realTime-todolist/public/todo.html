@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Real Time Todolist</title>
+</head>
+<body>
+    <h1>Todolist</h1>
+
+    <form id="form" action="" method="">
+        <input id="task" type="text" name="task" placeholder="Tasks">
+        <input type="submit" value="Add">
+    </form>
+
+    <section id="todo"></section>
+    <section id="done"></section>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+        const socket = io();
+        
+        let form = document.getElementById('form');
+        let inputTask = document.getElementById('task');
+
+        
+    </script>
+</body>
+</html>

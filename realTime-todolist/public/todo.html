@@ -14,8 +14,12 @@
         <input type="submit" value="Add">
     </form>
 
-    <section id="todo"></section>
-    <section id="done"></section>
+    <section>
+        <ul id="todo"></ul>
+    </section>
+    <section>
+        <ul id="done"></ul>
+    </section>
 
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript">
@@ -23,8 +27,63 @@
         
         let form = document.getElementById('form');
         let inputTask = document.getElementById('task');
+        let todo = document.getElementById('todo');
+        let done = document.getElementById('done');
 
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let inputValue = inputTask.value;
+
+            let data = {
+                task : inputValue,
+                done : false
+            }
+            // console.log(inputValue);
+            socket.emit('new_task', data);
+
+            if (alltasks.length == 0) {
+                todo.innerHTML = '';
+            }
+            
+            alltasks.push(tododata);
+            todo.innerHTML += '<li>'+ alltasks[alltasks.length-1] +'</li>'
+
+
+            inputTask.focus();
+            inputTask.value = '';
+        })
+
+        socket.on('todo', (tododata) => {
+            if (tododata.length > 0) {
+                todolist = '';
+            } else {
+                todolist = 'Empty';
+            }
+            
+            for (let i = 0; i < tododata.length; i++) {
+                todolist += '<li>'+ tododata[i] +'</li>';
+            }
+            
+            todo.innerHTML = todolist;
+        })
+
+        socket.on('add_task', (tododata) => {
+            if (alltasks.length == 0) {
+                todo.innerHTML = '';
+            }
+            
+            alltasks.push(tododata);
+            todo.innerHTML += '<li>'+ alltasks[alltasks.length-1] +'</li>'
+        })
         
+        // function insertTasks (data) {
+        //     if (alltasks) {
+                
+        //     }
+        //     let li = document.createElement('li');
+        //     li.innerHTML = '<span>'+  +'</span>'
+        //     todo.appendChild(li);
+        // }
     </script>
 </body>
 </html>

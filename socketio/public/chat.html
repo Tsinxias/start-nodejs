@@ -8,29 +8,56 @@
 </head>
 <body>
     <h1>Real time chatting</h1>
-    <form action="/" method="post">
-        <input id="message" type="text" name="message" placeholder="Your message...">
-        <input type="button" value="Send">
+    <form id="form1" action="" method="">
+        <input id="message" type="text" name="message" placeholder="Your message..." autofocus>
+        <input type="submit" value="Send">
     </form>
 
-    <p id="chatBox"></p>
+    <div id="chatBox"></div>
 
-    <script src="socket.io/socket.io.js" type="text/javascript"></script>
+    <script src="/socket.io/socket.io.js" type="text/javascript"></script>
     <script>
-        console.log(io);
         let socket = io.connect('http://localhost:8080'); 
-
-        let pseudo = prompt('What\'s your pseudo ?');
-        socket.emit('new_pseudo', pseudo);
 
         let message = document.getElementById('message');
         let chatBox = document.getElementById('chatBox');
 
-        let messageText = message.value;
-        socket.emit('new_message', messageText);
+
+        let pseudo = prompt('What\'s your pseudo ?');
         
-        socket.on('message', messageText);
+        socket.emit('pseudo', pseudo);
+        document.title = pseudo + ' - ' + document.title;
+        let form = document.getElementById('form1');
+
+        socket.on('new_pseudo', (pseudo) => {
+            let p = document.createElement('p');
+            p.innerHTML = '<em>' + pseudo + ' has joined the chat !<em>';
+            chatBox.appendChild(p);
+        })
         
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let messageText = message.value;
+
+            let data = {
+                message : messageText,
+                pseudo: pseudo
+            }
+            console.log(messageText);
+            socket.emit('message', data);
+            message.focus();
+            message.value = '';
+        });
+
+        socket.on('new_message', (data) => {
+            insertMessage(data.pseudo, data.message);
+        })
+        
+        function insertMessage(pseudo, message) {
+            let p = document.createElement('p');
+            p.innerHTML = pseudo + ': ' + message;
+            chatBox.appendChild(p);
+        }
     </script>
 </body>
 </html>

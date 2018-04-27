@@ -12,7 +12,7 @@ const io = require('socket.io').listen(server);
 // const sharedsession = require('express-socket.io-session');
 
 let todolist = [];
-
+let index;
 
 app.use(express.static('public'));
 // app.use(session);
@@ -30,24 +30,25 @@ io.sockets.on('connection', (socket) => {
 
     socket.emit('todolist', todolist);
 
-    socket.on('new_task', (data) => {
-        // console.log(data);
-        // if (socket.handshake.session == '') {
-        //     socket.handshake.session.data = data;
-        // } else {
-        //     socket.handshake.session.data = data;
-        // }
-        // socket.handshake.session.save();
-        // console.log(socket.handshake)
-        todolist.push(data);
-        socket.emit('add_task', todolist[todolist.length-1]);
-        socket.broadcast.emit('add_task', todolist[todolist.length-1]);
+    socket.on('new_task', (inputValue) => {
+        todolist.push(inputValue);
+        index = todolist.length-1;
+
+        console.log(inputValue);
+        console.log(index);
+        socket.emit('add_task', {task: inputValue, index: index});
+        socket.broadcast.emit('add_task', {task: inputValue, index: index});
+        console.log(todolist);
+    })
+
+    socket.on('delete_task', (taskID) => {
+        todolist.splice(taskID, 1);
+        socket.emit('todolist', todolist);
+        socket.broadcast.emit('todolist', todolist);
     })
 
     socket.on('disconnect', (data) => {
         console.log('Socket disconnected');
-        // delete socket.handshake.session.data;
-        // socket.handshake.session.save();
     })
 })
 

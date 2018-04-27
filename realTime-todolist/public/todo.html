@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Real Time Todolist</title>
+
+    <style>
+        a {
+            color: black;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
     <h1>Todolist</h1>
@@ -22,6 +29,7 @@
     </section>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript">
         const socket = io();
         
@@ -29,52 +37,46 @@
         let inputTask = document.getElementById('task');
         let todo = document.getElementById('todo');
         let done = document.getElementById('done');
-        let todolist = [];
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             let inputValue = inputTask.value;
 
-            let data = {
-                task : inputValue
-            }
-
             // console.log(inputValue);
-            socket.emit('new_task', data);
-
-            if (todolist.length == 0) {
-                todo.innerHTML = '';
-            }
-
-            todolist.push(inputTask);
-            todo.innerHTML += '<li id="'+(todolist.length-1)+'"><span></span></li>'
-            let span = document.getElementsByTagName('span')[todolist.length-1];
-            span.innerText = todolist[todolist.length-1];
+            socket.emit('new_task', inputValue);
             
             inputTask.focus();
             inputTask.value = '';
         })
 
-        socket.on('todolist', (p_todolist) => {
-            todolist = p_todolist;
-
-            let todolistHtml = todolist.length > 0 ? "" : " Todolist empty ...";
-            
-            for (let i = 0; i < todolist.length; i++) {
-                todolistHtml += '<li>'+ alltasks[i] +'</li>';
-            }
-
-            todo.innerHTML = todolistHtml;
+        socket.on('todolist', (todolist) => {
+            todo.innerHTML = '';
+            todolist.forEach((task, index) => {
+                todo.innerHTML += '<li id="'+ index +'">'+ task +'<a class="delete" data-index="'+ index +'" href="#">  |  X</a></li>';
+            });
         })
 
-        socket.on('add_task', (tododata) => {
-            if (todolist.length == 0) {
-                todo.innerHTML = '';
-            }
-
-            todolist.push(todotata);
-            todo.innerHTML += '<li id="'+(todolist.length-1)+'"><span>'+todolist[todolist.length-1]+'</span></li>';
+        socket.on('add_task', (data) => {
+            todo.innerHTML += '<li id="'+data.index+'"><span>'+data.task+'</span><a class="delete" data-index="'+ data.index +'" href="#">  |  X</a></li>';
         });
+
+        // let alala = document.getElementsByTagName('a');
+        // // let a = document.querySelector('a');
+        // // let li = a.parentNode;
+
+        // body.addEventListener('click', function(event) {
+        //     // console.log(event);
+        //     // console.log(this.dataset.index);
+        //     // console.log(this);
+        //     // let taskID = event.dataset.index;
+        //     let a = this.
+        //     socket.emit('delete_task', li.attr('id'));
+
+        // });
+
+        $('body').on('click', '.delete', function() {
+            socket.emit('delete_task', $(this).data('index'));
+        })
 
     </script>
 </body>

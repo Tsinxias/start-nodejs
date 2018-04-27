@@ -24,9 +24,6 @@
     <section>
         <ul id="todo"></ul>
     </section>
-    <section>
-        <ul id="done"></ul>
-    </section>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -59,20 +56,6 @@
         socket.on('add_task', (data) => {
             todo.innerHTML += '<li id="'+data.index+'"><span>'+data.task+'</span><a class="delete" data-index="'+ data.index +'" href="#">  |  X</a></li>';
         });
-
-        // let alala = document.getElementsByTagName('a');
-        // // let a = document.querySelector('a');
-        // // let li = a.parentNode;
-
-        // body.addEventListener('click', function(event) {
-        //     // console.log(event);
-        //     // console.log(this.dataset.index);
-        //     // console.log(this);
-        //     // let taskID = event.dataset.index;
-        //     let a = this.
-        //     socket.emit('delete_task', li.attr('id'));
-
-        // });
 
         $('body').on('click', '.delete', function() {
             socket.emit('delete_task', $(this).data('index'));

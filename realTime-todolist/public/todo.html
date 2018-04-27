@@ -29,61 +29,52 @@
         let inputTask = document.getElementById('task');
         let todo = document.getElementById('todo');
         let done = document.getElementById('done');
+        let todolist = [];
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             let inputValue = inputTask.value;
 
             let data = {
-                task : inputValue,
-                done : false
+                task : inputValue
             }
+
             // console.log(inputValue);
             socket.emit('new_task', data);
 
-            if (alltasks.length == 0) {
+            if (todolist.length == 0) {
                 todo.innerHTML = '';
             }
+
+            todolist.push(inputTask);
+            todo.innerHTML += '<li id="'+(todolist.length-1)+'"><span></span></li>'
+            let span = document.getElementsByTagName('span')[todolist.length-1];
+            span.innerText = todolist[todolist.length-1];
             
-            alltasks.push(tododata);
-            todo.innerHTML += '<li>'+ alltasks[alltasks.length-1] +'</li>'
-
-
             inputTask.focus();
             inputTask.value = '';
         })
 
-        socket.on('todo', (tododata) => {
-            if (tododata.length > 0) {
-                todolist = '';
-            } else {
-                todolist = 'Empty';
-            }
+        socket.on('todolist', (p_todolist) => {
+            todolist = p_todolist;
+
+            let todolistHtml = todolist.length > 0 ? "" : " Todolist empty ...";
             
-            for (let i = 0; i < tododata.length; i++) {
-                todolist += '<li>'+ tododata[i] +'</li>';
+            for (let i = 0; i < todolist.length; i++) {
+                todolistHtml += '<li>'+ alltasks[i] +'</li>';
             }
-            
-            todo.innerHTML = todolist;
+
+            todo.innerHTML = todolistHtml;
         })
 
         socket.on('add_task', (tododata) => {
-            if (alltasks.length == 0) {
+            if (todolist.length == 0) {
                 todo.innerHTML = '';
             }
-            
-            alltasks.push(tododata);
-            todo.innerHTML += '<li>'+ alltasks[alltasks.length-1] +'</li>'
-        })
-        
-        // function insertTasks (data) {
-        //     if (alltasks) {
-                
-        //     }
-        //     let li = document.createElement('li');
-        //     li.innerHTML = '<span>'+  +'</span>'
-        //     todo.appendChild(li);
-        // }
+
+            todolist.push(todotata);
+            todo.innerHTML += '<li id="'+(todolist.length-1)+'"><span>'+todolist[todolist.length-1]+'</span></li>';
+        });
+
     </script>
 </body>
-</html>

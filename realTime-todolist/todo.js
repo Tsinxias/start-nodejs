@@ -11,7 +11,7 @@ const io = require('socket.io').listen(server);
 // });
 // const sharedsession = require('express-socket.io-session');
 
-let alltasks = [];
+let todolist = [];
 
 
 app.use(express.static('public'));
@@ -28,9 +28,9 @@ io.sockets.on('connection', (socket) => {
     // let sessions = socket.handshake.session;
     // console.log(sessions);
 
-    socket.emit('todo', alltasks);
+    socket.emit('todolist', todolist);
 
-    socket.on('new_task', (tododata) => {
+    socket.on('new_task', (data) => {
         // console.log(data);
         // if (socket.handshake.session == '') {
         //     socket.handshake.session.data = data;
@@ -39,9 +39,9 @@ io.sockets.on('connection', (socket) => {
         // }
         // socket.handshake.session.save();
         // console.log(socket.handshake)
-        alltasks.push(tododata);
-        socket.emit('add_task', alltasks[alltasks.length-1]);
-        socket.broadcast.emit('add_task', alltasks[alltasks.length-1]);
+        todolist.push(data);
+        socket.emit('add_task', todolist[todolist.length-1]);
+        socket.broadcast.emit('add_task', todolist[todolist.length-1]);
     })
 
     socket.on('disconnect', (data) => {

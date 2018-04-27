@@ -39,7 +39,6 @@
             e.preventDefault();
             let inputValue = inputTask.value;
 
-            // console.log(inputValue);
             socket.emit('new_task', inputValue);
             
             inputTask.focus();
